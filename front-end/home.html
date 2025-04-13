@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Trang Báo</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background-color: #f9f9f9;
+      }
+
+      header {
+        background-color: #0077cc;
+        color: white;
+        padding: 15px 30px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .logo-section {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo {
+        height: 40px;
+        margin-right: 15px;
+        cursor: pointer;
+        background-color: transparent; /* Đảm bảo không có nền */
+      }
+
+      .title {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .nav-buttons {
+        display: flex;
+        gap: 10px;
+      }
+
+      .nav-buttons a {
+        text-decoration: none;
+        padding: 8px 16px;
+        background-color: white;
+        color: #0077cc;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.2s;
+      }
+
+      .nav-buttons a:hover {
+        background-color: #e0e0e0;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo-section">
+        <a href="/">
+          <img src="assets/logo.png" alt="Logo" class="logo" />
+        </a>
+        <div class="title">Báo Tổng Hợp</div>
+      </div>
+      <div class="nav-buttons">
+        <a href="/">Home</a>
+        <a href="/show">Article URL</a>
+      </div>
+    </header>
+  </body>
+</html>

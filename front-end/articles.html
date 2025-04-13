@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Danh sách bài báo đã lọc</title>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding-top: 80px; /* chừa không gian cho header */
+      }
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: #ffffff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        z-index: 1000;
+      }
+      header img {
+        height: 40px;
+        cursor: pointer;
+      }
+      .nav-buttons {
+        display: flex;
+        gap: 10px;
+      }
+      .nav-buttons a {
+        text-decoration: none;
+        padding: 8px 16px;
+        background-color: #0077cc;
+        color: white;
+        border-radius: 5px;
+        font-weight: bold;
+      }
+      .nav-buttons a:hover {
+        background-color: #005fa3;
+      }
+      h1 {
+        color: #333;
+        text-align: center;
+      }
+      form {
+        max-width: 800px;
+        margin: 20px auto;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      input {
+        flex: 1;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      button {
+        padding: 8px 12px;
+        background-color: #0077cc;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #005fa3;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+        max-width: 800px;
+        margin: auto;
+      }
+      li {
+        background-color: white;
+        margin-bottom: 10px;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .url-actions {
+        display: flex;
+        gap: 5px;
+      }
+      .url-actions button {
+        background-color: #e74c3c;
+        padding: 5px 10px;
+      }
+      .url-actions button.edit {
+        background-color: #f39c12;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <a href="/">
+        <img src="assets/logo.png" alt="Logo" />
+      </a>
+      <div class="nav-buttons"></div>
+    </header>
+
+    <!-- Main Content -->
+    <h1>Danh sách bài báo đã lọc</h1>
+
+    <form id="add-form">
+      <input
+        type="url"
+        id="new-url"
+        placeholder="Nhập URL bài báo mới..."
+        required
+      />
+      <button type="submit">Thêm</button>
+    </form>
+
+    <ul id="article-list"></ul>
+
+    <script>
+      const apiUrl = "/articles";
+
+      async function loadArticles() {
+        const res = await fetch(apiUrl);
+        const data = await res.json();
+        const list = document.getElementById("article-list");
+        list.innerHTML = "";
+
+        data.forEach((item) => {
+          const li = document.createElement("li");
+          const link = document.createElement("a");
+          link.href = item.url;
+          link.target = "_blank";
+          link.textContent = item.url;
+
+          const actions = document.createElement("div");
+          actions.className = "url-actions";
+
+          const editBtn = document.createElement("button");
+          editBtn.textContent = "Sửa";
+          editBtn.className = "edit";
+          editBtn.onclick = () => {
+            const newUrl = prompt("Nhập URL mới:", item.url);
+            if (newUrl && newUrl !== item.url) {
+              updateArticle(item.url, newUrl);
+            }
+          };
+
+          const delBtn = document.createElement("button");
+          delBtn.textContent = "Xoá";
+          delBtn.onclick = () => {
+            if (confirm("Bạn chắc chắn muốn xoá URL này?")) {
+              deleteArticle(item.url);
+            }
+          };
+
+          actions.appendChild(editBtn);
+          actions.appendChild(delBtn);
+
+          li.appendChild(link);
+          li.appendChild(actions);
+          list.appendChild(li);
+        });
+      }
+
+      async function addArticle(url) {
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url }),
+        });
+        if (res.ok) {
+          loadArticles();
+        } else {
+          const err = await res.json();
+          alert("❌ " + err.detail);
+        }
+      }
+
+      async function updateArticle(oldUrl, newUrl) {
+        const res = await fetch(apiUrl, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ old_url: oldUrl, new_url: newUrl }),
+        });
+        if (res.ok) {
+          loadArticles();
+        } else {
+          const err = await res.json();
+          alert("❌ " + err.detail);
+        }
+      }
+
+      async function deleteArticle(url) {
+        const res = await fetch(apiUrl, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url }),
+        });
+        if (res.ok) {
+          loadArticles();
+        } else {
+          const err = await res.json();
+          alert("❌ " + err.detail);
+        }
+      }
+
+      document.getElementById("add-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const url = document.getElementById("new-url").value;
+        if (url) {
+          addArticle(url);
+          document.getElementById("new-url").value = "";
+        }
+      });
+
+      loadArticles();
+    </script>
+  </body>
+</html>
