@@ -1,9 +1,12 @@
-# Sử dụng MongoDB image chính thức từ Docker Hub
+# Sử dụng image MongoDB chính thức
 FROM mongo:latest
 
-# Đặt tên người dùng và mật khẩu cho MongoDB
+# Cài đặt biến môi trường để khởi tạo MongoDB
 ENV MONGO_INITDB_ROOT_USERNAME=admin
 ENV MONGO_INITDB_ROOT_PASSWORD=MyStr0ngP@ss
 
-# Mở cổng 27017 để truy cập vào MongoDB từ ngoài container
+# Mở cổng 27017 cho MongoDB
 EXPOSE 27017
+
+# Khởi chạy MongoDB
+CMD ["mongod"]
