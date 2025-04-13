@@ -1,14 +1,9 @@
-# Base image
-FROM python:3.11-slim
+# Sử dụng MongoDB image chính thức từ Docker Hub
+FROM mongo:latest
 
-# Set working directory
-WORKDIR /app
+# Đặt tên người dùng và mật khẩu cho MongoDB
+ENV MONGO_INITDB_ROOT_USERNAME=admin
+ENV MONGO_INITDB_ROOT_PASSWORD=MyStr0ngP@ss
 
-# Copy project files
-COPY . .
-
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Default command
-CMD ["python", "recursive_crawler.py"]
+# Mở cổng 27017 để truy cập vào MongoDB từ ngoài container
+EXPOSE 27017
