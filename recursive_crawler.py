@@ -2,9 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
 from pymongo import MongoClient
-import time
-
-
+ 
 # Cấu hình MongoDB
 mongo_uri = "mongodb://admin:admin@localhost:27017/"
 client = MongoClient(mongo_uri)
@@ -48,8 +46,9 @@ def crawl_url(url, domain, max_depth=3, current_depth=0, visited=set()):
 
 # Gọi hàm chính
 if __name__ == "__main__":
-    seed_url = "https://vnexpress.net/"
-    parsed = urlparse(seed_url)
-    domain = parsed.netloc
+    seed_url_list = ["https://vnexpress.net/","https://dantri.com.vn/"]
+    for seed_url in  seed_url_list:
+        parsed = urlparse(seed_url)
+        domain = parsed.netloc
 
-    crawl_url(seed_url, domain, max_depth=3)
+        crawl_url(seed_url, domain, max_depth=3)
