@@ -6,7 +6,7 @@ import time
 
 
 # Cấu hình MongoDB
-mongo_uri = "mongodb://admin:admin@localhost:27017/"
+mongo_uri = "mongodb://admin:admin@mongodb-news:27017/"
 client = MongoClient(mongo_uri)
 db = client["crawler"]
 collection = db["url_crawled"]
@@ -21,7 +21,7 @@ def crawl_url(url, domain, max_depth=3, current_depth=0, visited=set()):
     visited.add(url)
 
     # Nếu đã trong DB thì bỏ qua
-    if collection.find_one({"url": url}):
+    if collection.count_documents({"url": url}, limit=1) > 0:
         return
 
     try:
@@ -32,7 +32,10 @@ def crawl_url(url, domain, max_depth=3, current_depth=0, visited=set()):
         return
 
     # Lưu vào DB
-    collection.insert_one({"url": url})
+    collection.insert_one({
+        "url": url,
+        "depth": current_depth
+    })
     print(f"[+] Lưu URL ({current_depth}): {url}")
 
     # Parse HTML

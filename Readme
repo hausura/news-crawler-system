@@ -1,0 +1,2 @@
+docker build -t news-crawler .
+docker-compose up --build

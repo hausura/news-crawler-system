@@ -1,0 +1,28 @@
+version: "3"
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb-news
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+      - ./mongo-data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+    ports:
+      - 27017:27017
+    networks:
+      - crawler-net
+  crawler:
+    build: .
+    container_name: news-crawler
+    environment:
+      - MONGO_URI=mongodb://admin:admin@localhost:27017/?authSource=admin
+    depends_on:
+      - mongodb
+    networks:
+      - crawler-net
+
+networks:
+  crawler-net:
+    driver: bridge
